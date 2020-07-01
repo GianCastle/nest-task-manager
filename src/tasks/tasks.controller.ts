@@ -23,8 +23,8 @@ export class TasksController {
 
   @Get()
   getAllTasks(@Query(ValidationPipe) taskFilters: GetTaskFilterDto): Task[] {
-    if (Object.keys(taskFilters).length)
-      return this.taskService.getTasksWithFilters(taskFilters);
+    const { length } = Object.keys(taskFilters);
+    if (length) return this.taskService.getTasksWithFilters(taskFilters);
 
     return this.taskService.getAllTasks();
   }
