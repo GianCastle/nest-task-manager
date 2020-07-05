@@ -5,6 +5,7 @@ import { GetTaskFilterDto } from './dto/get-task-filter-dto';
 import { Task } from './task.entity';
 import { TaskRepository } from './task.repository';
 import { InjectRepository } from '@nestjs/typeorm';
+import { TaskStatus } from './task-status-enum';
 
 @Injectable()
 export class TasksService {
@@ -13,6 +14,7 @@ export class TasksService {
     private taskRepository: TaskRepository,
   ) {}
 
+  async getTasks(taskFiltersDto: GetTaskFilterDto) {}
   async getTaskById(id: number): Promise<Task> {
     const found = await this.taskRepository.findOne(id);
     if (!found) {
@@ -21,10 +23,26 @@ export class TasksService {
 
     return found;
   }
-  // private tasks: Task[] = [];
-  // getAllTasks(): Task[] {
-  //   return this.tasks;
-  // }
+
+  async deleteTask(taskId: number): Promise<any> {
+    return this.taskRepository.removeTask(taskId);
+  }
+
+  async createTask(createTaskDto: CreateTaskDto): Promise<Task> {
+    const task = await this.taskRepository.createTask(createTaskDto);
+
+    return task;
+  }
+
+  async updateTaskStatus(id: number, status: TaskStatus): Promise<Task> {
+    const task = await this.getTaskById(id);
+
+    task.status = status;
+    await task.save();
+
+    return task;
+  }
+
   // getTasksWithFilters(taskFilterDto: GetTaskFilterDto): Task[] {
   //   const { status, search } = taskFilterDto;
   //   let tasks = this.getAllTasks();
@@ -38,30 +56,5 @@ export class TasksService {
   //     );
   //   }
   //   return tasks;
-  // }
-  // getTaskById(taskId: string): Task {
-  //   const found = this.tasks.find(({ id }) => id === Number(taskId));
-  //   if (!found) throw new NotFoundException();
-  //   return found;
-  // }
-  // createTask(createTaskDto: CreateTaskDto): Task {
-  //   const { title, description } = createTaskDto;
-  //   const task: Task = {
-  //     id: this.tasks.length + 1,
-  //     title,
-  //     description,
-  //     status: TaskStatus.OPEN,
-  //   };
-  //   this.tasks.push(task);
-  //   return task;
-  // }
-  // deleteTask(taskId: string): void {
-  //   const found = this.getTaskById(taskId);
-  //   this.tasks = this.tasks.filter(v => v.id !== found.id);
-  // }
-  // updateTaskStatus(id: string, status: TaskStatus): Task {
-  //   const task = this.getTaskById(id);
-  //   task.status = status;
-  //   return task;
   // }
 }
