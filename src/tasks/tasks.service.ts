@@ -14,7 +14,10 @@ export class TasksService {
     private taskRepository: TaskRepository,
   ) {}
 
-  async getTasks(taskFiltersDto: GetTaskFilterDto) {}
+  async getTasks(taskFiltersDto: GetTaskFilterDto): Promise<Task[]> {
+    return this.taskRepository.getTasks(taskFiltersDto);
+  }
+
   async getTaskById(id: number): Promise<Task> {
     const found = await this.taskRepository.findOne(id);
     if (!found) {
